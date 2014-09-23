@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>index</title>
+<style>
+body {
+    font-size: 12px;
+    width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+    background-color: lightskyblue;
+}
+
+form {
+    position: fixed;
+    bottom:20px;
+    right:5px;
+    width: 450px;
+    padding: 8px;
+    border: 3px solid darkslategrey;
+   display: none;
+}
+
+.comment {
+    border: 1px solid lightslategrey;
+    background-color: lightgoldenrodyellow;
+    padding: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.id {
+    margin-left: 15px;
+}
+.id, .quote_who, .author {
+    color: cornflowerblue;
+    font-size: 11px;
+    line-height: 1.5em;
+}
+
+.created_time {
+    color: grey;
+
+.comment_text {
+    font-size: 14px;
+}
+
+</style>
+</head>
+<body>
+<h2>163comments guestbook made of Tornado</h2>
+
+<form action="/" method="post" enctype="multipart/form-data">
+<p><label for="id_author">Author:</label> <input id="id_author" maxlength="65" name="author" type="text" /></p>
+<p><label for="id_quote_who">Quote who:</label> <input id="id_quote_who" name="quote_who" type="number" /></p>
+<p><label for="id_comment">Comment:</label><textarea cols="40" id="id_comment" name="comment" rows="10"></textarea></p>
+<input type="submit" value="press me" name="submit">
+{% module xsrf_form_html() %}
+</form>
+
+<hr />
+
+{% for i in coms_list%}
+    {% for j,k in i.iteritems() %}
+        {% raw j %}
+        {% for l in k %}
+            <span class="id">ID:{{ l.id }}</span>&nbsp;
+            <span class="quote_who">quote_who:{{ l.quote_who}}</span>&nbsp;
+            <span class="author">作者:{{ l.author}}</span>&nbsp;
+            <span class="created_time">发表:{{ l.created_time}}</span><br />
+            <span class="comment_text">{{ l.comment }}</span><br />
+            </div>
+        {% end %}  
+    {% end %}
+{% end%}
+
+</body>
+</html>
