@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS `netease_style_guestbook` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 
-INSERT INTO `netease_style_guestbook` (`id`, `author`, `quote_who`, `comment`, `created_time`) VALUES
-(1, 'someone', NULL, 'this is first comment.', '2014-09-19 11:23:15');
+-- INSERT INTO `netease_style_guestbook` (`id`, `author`, `quote_who`, `comment`, `created_time`) VALUES
+-- (1, 'someone', NULL, 'this is first comment.', '2014-09-19 11:23:15');
 
