@@ -21,7 +21,6 @@ class IndexHandler(tornado.web.RequestHandler):
 
     # @gen.coroutine
     def get(self):
-        print datetime.now()
         comments = self.db.query(
             "SELECT * FROM netease_style_guestbook"
             " ORDER BY created_time DESC LIMIT 50")
@@ -30,15 +29,13 @@ class IndexHandler(tornado.web.RequestHandler):
             div_coms = mult_div(i['id'], {}, 0, [])
             coms_list.append(div_coms)
 
-        print 1
-
         self.render("index.html", coms_list = coms_list)
 
     def post(self):
         author = self.get_argument('author')
         print author
         quote_who = self.get_argument('quote_who')
-        comment = self.get_argument('comment')
+        comment = escape.xhtml_escape(self.get_argument('comment').replace("%", "%%"))
         sql = '''
             INSERT INTO `netease_style_guestbook`
             SET 
@@ -75,11 +72,12 @@ def mult_div(com_id, com_dict={}, com_sum=0, coms_list=[]):
             return mult_div(com_id, com_dict, com_sum, coms_list)
 
 
+        
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="blog database host")
-define("mysql_database", default="your database name", help="database name")
-define("mysql_user", default="your database user name", help="database user")
-define("mysql_password", default="your database password", help="database password")
+define("mysql_database", default="yourdb", help="database name")
+define("mysql_user", default="yourname", help="database user")
+define("mysql_password", default="yourpw", help="database password")
 
 class Application(tornado.web.Application):
     def __init__(self):

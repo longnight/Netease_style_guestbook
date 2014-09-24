@@ -24,26 +24,7 @@ class IndexHandler(tornado.web.RequestHandler):
     @property
     def db(self):
         return self.application.db
-
-    def mult_div(self, com_id, com_dict={}, com_sum=0, coms_list=[]):
-        db = torndb.Connection(
-            host=options.mysql_host, database=options.mysql_database,
-            user=options.mysql_user, password=options.mysql_password)
-        head_str = '<div class="comment">'    
-        if not db.get("SELECT * FROM netease_style_guestbook WHERE id= %s" % com_id):
-            return com_dict
-        else:
-            coms = db.get("SELECT * FROM netease_style_guestbook WHERE id= %s" % com_id)
-            com_sum = com_sum + 1
-            coms_list.insert(0, coms)        
-            key = head_str * com_sum
-            com_dict = {}
-            com_dict[key] = coms_list
-            if not coms['quote_who']:
-                return com_dict
-            else:
-                com_id = coms['quote_who']
-                return self.mult_div(com_id, com_dict, com_sum, coms_list)
+    
 
     @gen.coroutine
     def generate_coms(self):
@@ -51,9 +32,30 @@ class IndexHandler(tornado.web.RequestHandler):
             "SELECT * FROM netease_style_guestbook"
             " ORDER BY created_time DESC LIMIT 50")
 
+        def mult_div(com_id, com_dict={}, com_sum=0, coms_list=[]):
+            db = torndb.Connection(
+                host=options.mysql_host, database=options.mysql_database,
+                user=options.mysql_user, password=options.mysql_password)
+            head_str = '<div class="comment">'    
+            if not db.get("SELECT * FROM netease_style_guestbook WHERE id= %s" % com_id):
+                return com_dict
+            else:
+                coms = db.get("SELECT * FROM netease_style_guestbook WHERE id= %s" % com_id)
+                com_sum = com_sum + 1
+                coms_list.insert(0, coms)        
+                key = head_str * com_sum
+                com_dict = {}
+                com_dict[key] = coms_list
+                if not coms['quote_who']:
+                    return com_dict
+                else:
+                    com_id = coms['quote_who']
+                    return mult_div(com_id, com_dict, com_sum, coms_list)
+
         def f(self):
             for i in comments:
-                yield self.mult_div(i['id'], {}, 0, [])
+                yield mult_div(i['id'], {}, 0, [])
+
         coms_list = f(self)
         raise gen.Return(coms_list)
 
@@ -66,7 +68,7 @@ class IndexHandler(tornado.web.RequestHandler):
         author = self.get_argument('author')
         print author
         quote_who = self.get_argument('quote_who')
-        comment = escape.xhtml_escape(self.get_argument('comment'))
+        comment = escape.xhtml_escape(self.get_argument('comment').replace("%", "%%"))
         sql = '''
             INSERT INTO netease_style_guestbook
             SET 
@@ -77,16 +79,15 @@ class IndexHandler(tornado.web.RequestHandler):
         if quote_who:
             sql += ",quote_who=\'%s\'" % quote_who
         sql += ";"
-        print sql
         self.db.execute(sql)
         self.redirect('/')
 
         
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="blog database host")
-define("mysql_database", default="your database name", help="database name")
-define("mysql_user", default="your database user name", help="database user")
-define("mysql_password", default="your database password", help="database password")
+define("mysql_database", default="yourdb", help="database name")
+define("mysql_user", default="yourname", help="database user")
+define("mysql_password", default="yourpw", help="database password")
 
 class Application(tornado.web.Application):
     def __init__(self):
