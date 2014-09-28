@@ -66,7 +66,6 @@ class IndexHandler(tornado.web.RequestHandler):
 
     def post(self):
         author = self.get_argument('author')
-        print author
         quote_who = self.get_argument('quote_who')
         comment = escape.xhtml_escape(self.get_argument('comment').replace("%", "%%"))
         sql = '''

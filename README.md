@@ -7,3 +7,16 @@ A simple guestbook code sample writed in tornado.
 
 Demo 截图在：
 http://maruta.be/1984/105
+
+共有3个方案
+1,
+app.py: 
+tornado + MySQL
+
+2,
+app_coroutine.py: 
+tornado + MySQL + coroutine
+
+3,
+app_motor.py:
+tornado + Mongodb + coroutine
