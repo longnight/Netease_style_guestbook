@@ -63,14 +63,6 @@ form {
 </form>
 
 <hr />
-{#
-{% for i in coms_list %}
-    {% for j in i %}
-        {{ j }}
-    {% end %}
-{% end %}
-#}
-
 
 {% for i in coms_list%}
     {% for j,k in i.iteritems() %}
